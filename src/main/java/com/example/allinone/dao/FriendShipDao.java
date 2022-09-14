@@ -12,4 +12,7 @@ public interface FriendShipDao extends JpaRepository<FriendShip, Integer> {
 
     @Query("select q from FriendShip q where q.friendRequest.id = :userId")
     List<FriendShip> findByFriendRequest(@Param("userId") Integer userId);
+
+    @Query("select q from FriendShip q where q.friendAccept.id = :userId")
+    List<FriendShip> findByFriendAccept(@Param("userId") Integer userId);
 }

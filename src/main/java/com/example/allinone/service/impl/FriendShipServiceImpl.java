@@ -24,8 +24,8 @@ public class FriendShipServiceImpl implements FriendShipService {
     public void addFriend(FriendRequestDto friendRequest) throws Exception {
 
         FriendShip friendShip = new FriendShip();
-       UserProfile requestUser = userProfileDao.findById(friendRequest.getFriendRequest()).orElseThrow(null);
-       UserProfile acceptUser = userProfileDao.findById(friendRequest.getFriendAccept()).orElseThrow(null);
+       UserProfile requestUser = userProfileDao.findById(friendRequest.getFriendRequest()).orElse(null);
+       UserProfile acceptUser = userProfileDao.findById(friendRequest.getFriendAccept()).orElse(null);
        if(requestUser == null || acceptUser == null){
            throw new Exception("user not found");
        }
@@ -39,14 +39,17 @@ public class FriendShipServiceImpl implements FriendShipService {
         if(userId == null || userId <=0){
             throw new Exception("Invalid user");
         }
-        List<FriendShip> res = friendShipDao.findByFriendRequest(userId);
-        if(res == null || res.size() == 0){
-            throw new Exception("no friends found");
-        }
+        List<FriendShip> request = friendShipDao.findByFriendRequest(userId);
+        List<FriendShip> accept = friendShipDao.findByFriendAccept(userId);
+
         List<UserProfile> result = new ArrayList<>();
-        for(FriendShip friendShip : res){
+        for(FriendShip friendShip : request){
             result.add(friendShip.getFriendAccept());
         }
+        for(FriendShip friendShip : accept){
+            result.add(friendShip.getFriendRequest());
+        }
+
         return result;
     }
 }
